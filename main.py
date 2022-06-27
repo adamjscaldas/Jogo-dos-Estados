@@ -1,6 +1,7 @@
 # Mensagem de boas vindas
 import easygui as easygui
 import random
+import os
 
 
 def pegaraleatorio(lista):
@@ -21,28 +22,66 @@ def decidir(valor):
 
 
 def jogo(listaoriginal, repeticoes):
+    # Lista usada para o jogo escolher qual o valor da variável estado
     lista1 = listaoriginal
+    """
+    A ideia é que a variável lista1 só seja usada para atribuir um valor
+    aleatório a variável estado, de forma que o programa não repita
+    nenhuma pergunta.
+    
+    Ela recebe o valor inicial de mapa no início do código e depois tem
+    1 valor extraído dela == ao valor de estado no final do loop de
+    repetição.
+    """
+
+    # Lista usada para escolher 2 valores aleatórios
     lista2 = listaoriginal
-    print(f'Lista 2 original: {lista2}')
+    """
+    A ideia é que a variável lista2 seja usada para extrair 2 valores
+    aleatórios que serão usados para formar as 2 respostas erradas do
+    jogo.
+    
+    Marcado em "*1-"
+    Ela recebe o valor inicial de mapa no início do código e em seguida
+    tem o valor de estado extraído dela, para que as duas opções
+    erradas não sejam iguais à opção correta. No final do loop, o valor
+    de estado é adicionado ao final da lista2 com a função append().
+    """
+    # Contador de acertos
     acertos = 0
+    # Contador da rodada
     contador = 0
+    # Mostra qual foi a ordem correta das respostas no final do jogo
     ordemrespostas = []
+
+    # Identifica o diretório no qual o arquivo "main.py" está
+    abspath = os.path.abspath(__file__)
+    local1 = os.path.dirname(abspath)
+    """
+    Usado para que o programa consiga identificar o diretório em que ele
+    está, permitindo que ele consiga acessar os arquivos .png dos mapas.
+    
+    Permite que o diretório "Jogo-dos-Estados" possa ser realocado dentro
+    da máquina sem que ocorra conflito dentro do código.
+    """
+
+    # Repete com base na escolha do modo de jogo
     for x in range(repeticoes):
         contador += 1
         print(f'Rodada: {contador}')
         estado = pegaraleatorio(lista1)
         print(f'O valor de estado é: {estado}')
 
-        print(f'Check 0 da lista2: {lista2}')
+        # Dentro do loop para que seja atualizada com o próximo diretório após cada loop
+        local2 = f"""{local1}\\Mapas\\MAPA BRASIL {estado}.png"""
 
+        # *1 - Variável estado removida de lista2 para que o valor correto não seja escolhido
         lista2.remove(estado)
-
-        print('-' * 200)
-        print(f'Check 1 da lista2: {lista2}')
-        print('-' * 200)
-
+        # É criada uma lista contendo 2 valores aleatórios e 1 valor == estado
         listainicial = [pegaraleatorio(lista2), pegaraleatorio(lista2), estado]
-        for x in range(50):
+
+        # Testa se as opções não se repetiram
+        """for x in range(50):
             for x in range(len(listainicial) - 1):
                 if listainicial[x] == listainicial[x + 1]:
                     try:
@@ -55,43 +94,38 @@ def jogo(listaoriginal, repeticoes):
                     finally:
                         pass
                 else:
-                    pass
+                    pass"""
 
-        for x in range(len(listainicial) - 1):
-            if listainicial[x] == estado:
-                if listainicial[x + 1] == estado:
-                    """
-                    **************************************
-                    MEXI AQUI
-                    NÃO EXISTIA ESSE IF, SÓ EXISTIA O PASS
-                    **************************************
-                    """
+        for z in range(50):
+            for x in range(len(listainicial) - 1):
+                if listainicial[x] == estado:
+                    if listainicial[x + 1] == estado:
+                        listainicial.remove(listainicial[x])
+                        listainicial.append(pegaraleatorio(lista2))
+                    else:
+                        pass
+                elif listainicial[x] == listainicial[x + 1]:
                     listainicial.remove(listainicial[x])
                     listainicial.append(pegaraleatorio(lista2))
-                else:
-                    pass
-            elif listainicial[x] == listainicial[x + 1]:
-                listainicial.remove(listainicial[x])
-                listainicial.append(pegaraleatorio(lista2))
+
 
         listarandom = []
         for x in range(3):
             listarandom.append(random.choice(listainicial))
             listainicial.remove(listarandom[x])
 
-        print()
-        print(f'As opções depois do shuffle são: {listarandom}')
+        print(f'As opções são: {listarandom}')
 
         resposta = easygui.buttonbox(title='O jogo',
-                                     image= f'C:\\Users\T-Gamer\PycharmProjects'
-                                            f'\pythonProject2\Jogo\Mapas\MAPA BRASIL {estado}.png',
+                                     image=local2,
                                      choices=listarandom,
                                      msg=f'Rodada: {contador}')
         if resposta == estado:
-            easygui.msgbox(msg='Você acertou!')
+            # easygui.msgbox(msg='Você acertou!')
             acertos += 1
         else:
-            easygui.msgbox(msg=f'Você errou. A resposta correta era {estado}')
+            # easygui.msgbox(msg=f'Você errou. A resposta correta era {estado}')
+            pass
 
         lista2.append(estado)
 
@@ -101,10 +135,10 @@ def jogo(listaoriginal, repeticoes):
 
         ordemrespostas.append(estado)
 
-        print(f'Check 2 da lista2: {lista2}')
-
+    # Mensagem final
     easygui.msgbox(f'Você acertou {acertos} de {repeticoes}\n'
                    f'A ordem das respotas foi {ordemrespostas}')
+    print(f'A ordem das respotas foi {ordemrespostas}')
 
 
 mapa = ['AC', 'AL', 'AM',
