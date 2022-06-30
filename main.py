@@ -1,5 +1,4 @@
-# Mensagem de boas vindas
-import easygui as easygui
+import easygui
 import random
 import os
 
@@ -14,19 +13,61 @@ def removerdalista(lista: list, valor: str) -> list:
     return lista.remove(valor)
 
 
-# Mensagem inicial para escolher o modo de jogo
-def inicio(facil: int, medio: int, dificil: int) -> int:
-    modo = easygui.buttonbox(msg='Qual será o modo de jogo?',
+# Função que inicia o jogo
+"""
+É possível escolher através dela quantas rodadas terá o jogo
+"""
+
+
+def inicio():
+    modo = escolher()
+    modo = conversor(modo)
+    teste = loop(dificuldade=modo)
+    while teste == 0:
+        if teste == 0:
+            teste = loop(dificuldade=modo)
+            print('Ta repetindo aqui')
+        else:
+            break
+
+
+# ********* FAZER UMA JANELA DE INFORMAÇÕES, UMA JANELA PARA ALTERAR A QUANTIDADE
+# DE RODADAS E UMA JANELA DE CRÉDITOS
+# ********* FAZER COM QUE O JOGO NÃO QUEBRE SE A PESSOA CLICAR NA IMAGEM
+
+
+def conversor(modo, facil=3, medio=10, dificil=27) -> str:
+    if modo == f'Rápido: {facil} perguntas':
+        return 'FACIL'
+    elif modo == f'Diverso: {medio} perguntas':
+        return 'MEDIO'
+    elif modo == f'Completo: {dificil} perguntas':
+        return 'DIFICIL'
+    elif modo == "Info":
+        return 'INFO'
+
+
+def escolher(facil=3, medio=10, dificil=27) -> str:
+    return easygui.buttonbox(msg='Qual será o modo de jogo?',
                              title='Modo de jogo',
                              choices=[f'Rápido: {facil} perguntas',
                                       f'Diverso: {medio} perguntas',
-                                      f'Completo: {dificil} perguntas'])
-    if modo == f'Rápido: {facil} perguntas':
-        jogo(mapa, facil)
-    elif modo == f'Diverso: {medio} perguntas':
-        jogo(mapa, medio)
-    elif modo == f'Completo: {dificil} perguntas':
-        jogo(mapa, dificil)
+                                      f'Completo: {dificil} perguntas',
+                                      f'Info'])
+
+
+def loop(dificuldade: str, facil=3, medio=10, dificil=27):
+    if dificuldade.upper() == 'FACIL':
+        jogo(listaoriginal=mapa, repeticoes=facil)
+    elif dificuldade.upper() == 'MEDIO':
+        jogo(listaoriginal=mapa, repeticoes=medio)
+    elif dificuldade.upper() == 'DIFICIL':
+        jogo(listaoriginal=mapa, repeticoes=dificil)
+    elif dificuldade.upper() == 'INFO':
+        easygui.msgbox(msg='Este é o Jogo dos Estados feito por Adam Johannes.',
+                       title='Informações',
+                       ok_button='Retornar')
+        return 0
 
 
 def jogo(listaoriginal: list, repeticoes: int):
@@ -172,4 +213,4 @@ easygui.msgbox(msg='Olá, seja bem vindo ao meu joguinho de Estados do Brasil.',
 """
 
 if __name__ == '__main__':
-    inicio(3, 10, 27)
+    inicio()
