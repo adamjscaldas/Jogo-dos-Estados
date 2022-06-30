@@ -4,24 +4,32 @@ import random
 import os
 
 
-def pegaraleatorio(lista):
+# Pega um valor aleatório de uma lista e retorna ele como str
+def pegaraleatorio(lista: list) -> str:
     return random.choice(lista)
 
 
-def removerdalista(lista, valor):
+# Remove um valor str de uma lista
+def removerdalista(lista: list, valor: str) -> list:
     return lista.remove(valor)
 
 
-def decidir(valor):
-    if valor == 'Rápido: 3 perguntas':
-        return 1
-    elif valor == 'Diverso: 10 perguntas':
-        return 2
-    elif valor == 'Completo: 27 perguntas':
-        return 3
+# Mensagem inicial para escolher o modo de jogo
+def inicio(facil: int, medio: int, dificil: int) -> int:
+    modo = easygui.buttonbox(msg='Qual será o modo de jogo?',
+                             title='Modo de jogo',
+                             choices=[f'Rápido: {facil} perguntas',
+                                      f'Diverso: {medio} perguntas',
+                                      f'Completo: {dificil} perguntas'])
+    if modo == f'Rápido: {facil} perguntas':
+        jogo(mapa, facil)
+    elif modo == f'Diverso: {medio} perguntas':
+        jogo(mapa, medio)
+    elif modo == f'Completo: {dificil} perguntas':
+        jogo(mapa, dificil)
 
 
-def jogo(listaoriginal, repeticoes):
+def jogo(listaoriginal: list, repeticoes: int):
     # Lista usada para o jogo escolher qual o valor da variável estado
     lista1 = listaoriginal
     """
@@ -78,10 +86,12 @@ def jogo(listaoriginal, repeticoes):
         # *1 - Variável estado removida de lista2 para que o valor correto não seja escolhido
         lista2.remove(estado)
         # É criada uma lista contendo 2 valores aleatórios e 1 valor == estado
-        listainicial = [pegaraleatorio(lista2), pegaraleatorio(lista2), estado]
+        listainicial = [pegaraleatorio(lista=lista2), pegaraleatorio(lista=lista2), estado]
 
         # Testa se as opções não se repetiram
-        """for x in range(50):
+        """
+        # Teste meia boca
+        for x in range(50):
             for x in range(len(listainicial) - 1):
                 if listainicial[x] == listainicial[x + 1]:
                     try:
@@ -94,25 +104,26 @@ def jogo(listaoriginal, repeticoes):
                     finally:
                         pass
                 else:
-                    pass"""
+                    pass
+            """
 
+        # Teste bom
         for z in range(50):
-            for x in range(len(listainicial) - 1):
-                if listainicial[x] == estado:
-                    if listainicial[x + 1] == estado:
-                        listainicial.remove(listainicial[x])
-                        listainicial.append(pegaraleatorio(lista2))
+            for y in range(len(listainicial) - 1):
+                if listainicial[y] == estado:
+                    if listainicial[y + 1] == estado:
+                        listainicial.remove(listainicial[y])
+                        listainicial.append(pegaraleatorio(lista=lista2))
                     else:
                         pass
-                elif listainicial[x] == listainicial[x + 1]:
-                    listainicial.remove(listainicial[x])
-                    listainicial.append(pegaraleatorio(lista2))
-
+                elif listainicial[y] == listainicial[y + 1]:
+                    listainicial.remove(listainicial[y])
+                    listainicial.append(pegaraleatorio(lista=lista2))
 
         listarandom = []
-        for x in range(3):
+        for a in range(3):
             listarandom.append(random.choice(listainicial))
-            listainicial.remove(listarandom[x])
+            listainicial.remove(listarandom[a])
 
         print(f'As opções são: {listarandom}')
 
@@ -121,23 +132,25 @@ def jogo(listaoriginal, repeticoes):
                                      choices=listarandom,
                                      msg=f'Rodada: {contador}')
         if resposta == estado:
-            # easygui.msgbox(msg='Você acertou!')
+            easygui.msgbox(msg='Você acertou!')
             acertos += 1
         else:
-            # easygui.msgbox(msg=f'Você errou. A resposta correta era {estado}')
+            easygui.msgbox(msg=f'Você errou. A resposta correta era {estado}')
             pass
 
         lista2.append(estado)
 
-        removerdalista(lista1, estado)
+        removerdalista(lista=lista1, valor=estado)
 
         lista2.append(estado)
 
         ordemrespostas.append(estado)
 
     # Mensagem final
-    easygui.msgbox(f'Você acertou {acertos} de {repeticoes}\n'
-                   f'A ordem das respotas foi {ordemrespostas}')
+    easygui.msgbox(msg=f'Você acertou {acertos} de {repeticoes}\n'
+                   f'A ordem das respotas foi {ordemrespostas}',
+                   title='Resultado',
+                   ok_button='Encerrar')
     print(f'A ordem das respotas foi {ordemrespostas}')
 
 
@@ -158,19 +171,5 @@ easygui.msgbox(msg='Olá, seja bem vindo ao meu joguinho de Estados do Brasil.',
                ok_button='Vamos lá!')
 """
 
-modo = easygui.buttonbox(msg='Qual será o modo de jogo?',
-                         title='Modo de jogo',
-                         choices=['Rápido: 3 perguntas',
-                                  'Diverso: 10 perguntas',
-                                  'Completo: 27 perguntas'])
-
-modo = decidir(modo)
-
-if modo == 1:
-    jogo(mapa, 3)
-
-elif modo == 2:
-    jogo(mapa, 10)
-
-elif modo == 3:
-    jogo(mapa, 27)
+if __name__ == '__main__':
+    inicio(3, 10, 27)
