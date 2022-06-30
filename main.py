@@ -22,13 +22,11 @@ def removerdalista(lista: list, valor: str) -> list:
 def inicio():
     modo = escolher()
     modo = conversor(modo)
-    teste = loop(dificuldade=modo)
-    while teste == 0:
-        if teste == 0:
-            teste = loop(dificuldade=modo)
-            print('Ta repetindo aqui')
-        else:
-            break
+    modo = loop(dificuldade=modo)
+    while modo == 0:
+        modo = escolher()
+        modo = conversor(modo)
+        modo = loop(dificuldade=modo)
 
 
 # ********* FAZER UMA JANELA DE INFORMAÇÕES, UMA JANELA PARA ALTERAR A QUANTIDADE
@@ -64,10 +62,11 @@ def loop(dificuldade: str, facil=3, medio=10, dificil=27):
     elif dificuldade.upper() == 'DIFICIL':
         jogo(listaoriginal=mapa, repeticoes=dificil)
     elif dificuldade.upper() == 'INFO':
-        easygui.msgbox(msg='Este é o Jogo dos Estados feito por Adam Johannes.',
-                       title='Informações',
-                       ok_button='Retornar')
-        return 0
+        retornar = easygui.msgbox(msg='Este é o Jogo dos Estados feito por Adam Johannes.',
+                                  title='Informações',
+                                  ok_button='Retornar')
+        if retornar == "Retornar":
+            return 0
 
 
 def jogo(listaoriginal: list, repeticoes: int):
@@ -189,7 +188,7 @@ def jogo(listaoriginal: list, repeticoes: int):
 
     # Mensagem final
     easygui.msgbox(msg=f'Você acertou {acertos} de {repeticoes}\n'
-                   f'A ordem das respotas foi {ordemrespostas}',
+                       f'A ordem das respotas foi {ordemrespostas}',
                    title='Resultado',
                    ok_button='Encerrar')
     print(f'A ordem das respotas foi {ordemrespostas}')
