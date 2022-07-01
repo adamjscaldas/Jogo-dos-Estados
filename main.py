@@ -69,6 +69,28 @@ def loop(dificuldade: str, facil=3, medio=10, dificil=27):
             return 0
 
 
+def testar(lista_teste: list, lista_extrair:list, valor: str) -> list:
+    for z in range(50):
+        for y in range(len(lista_teste) - 1):
+            if lista_teste[y] == valor:
+                if lista_teste[y + 1] == valor:
+                    lista_teste.remove(lista_teste[y])
+                    lista_teste.append(pegaraleatorio(lista=lista_extrair))
+                else:
+                    pass
+            elif lista_teste[y] == lista_teste[y + 1]:
+                lista_teste.remove(lista_teste[y])
+                lista_teste.append(pegaraleatorio(lista=lista_extrair))
+    return lista_teste
+
+
+def randomizar(lista_input, lista_output):
+    for a in range(3):
+        lista_output.append(random.choice(lista_input))
+        lista_output.remove(lista_output[a])
+    return lista_output
+
+
 def jogo(listaoriginal: list, repeticoes: int):
     # Lista usada para o jogo escolher qual o valor da variável estado
     lista1 = listaoriginal
@@ -129,38 +151,9 @@ def jogo(listaoriginal: list, repeticoes: int):
         listainicial = [pegaraleatorio(lista=lista2), pegaraleatorio(lista=lista2), estado]
 
         # Testa se as opções não se repetiram
-        """
-        # Teste meia boca
-        for x in range(50):
-            for x in range(len(listainicial) - 1):
-                if listainicial[x] == listainicial[x + 1]:
-                    try:
-                        lista2.remove(x)
-                        listainicial.remove(listainicial[x])
-                        listainicial.append(pegaraleatorio(lista2))
-                        lista2.append(x)
-                    except:
-                        pass
-                    finally:
-                        pass
-                else:
-                    pass
-            """
-
-        # Teste bom
-        for z in range(50):
-            for y in range(len(listainicial) - 1):
-                if listainicial[y] == estado:
-                    if listainicial[y + 1] == estado:
-                        listainicial.remove(listainicial[y])
-                        listainicial.append(pegaraleatorio(lista=lista2))
-                    else:
-                        pass
-                elif listainicial[y] == listainicial[y + 1]:
-                    listainicial.remove(listainicial[y])
-                    listainicial.append(pegaraleatorio(lista=lista2))
-
+        listainicial = testar(lista_teste=listainicial, lista_extrair=lista2, valor=estado)
         listarandom = []
+        # ********listarandom = randomizar(lista_input=listainicial, lista_output=listarandom)
         for a in range(3):
             listarandom.append(random.choice(listainicial))
             listainicial.remove(listarandom[a])
