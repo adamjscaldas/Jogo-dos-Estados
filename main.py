@@ -23,6 +23,11 @@ def inicio():
     modo = escolher()
     modo = conversor(modo)
     modo = loop(dificuldade=modo)
+    """
+    Se o usuário escolher a opção "Info" o valor retornado será 0,
+    esse while faz com que, sempre que a pessoa fechar a janela que
+    "Info" abre, o código retorne para a seleção de dificuldade
+    """
     while modo == 0:
         modo = escolher()
         modo = conversor(modo)
@@ -34,7 +39,7 @@ def inicio():
 # ********* FAZER COM QUE O JOGO NÃO QUEBRE SE A PESSOA CLICAR NA IMAGEM
 
 
-def conversor(modo, facil=3, medio=10, dificil=27) -> str:
+def conversor(modo: str, facil=3, medio=10, dificil=27) -> str:
     if modo == f'Rápido: {facil} perguntas':
         return 'FACIL'
     elif modo == f'Diverso: {medio} perguntas':
@@ -84,11 +89,28 @@ def testar(lista_teste: list, lista_extrair:list, valor: str) -> list:
     return lista_teste
 
 
-def randomizar(lista_input, lista_output):
+def randomizar(lista_input: list, lista_output: list) -> list:
     for a in range(3):
         lista_output.append(random.choice(lista_input))
-        lista_output.remove(lista_output[a])
+        lista_input.remove(lista_output[a])
     return lista_output
+
+
+def respostas(imagem: str, escolhas: list, contador: int) -> str:
+    return easygui.buttonbox(title='O jogo',
+                             image=imagem,
+                             choices=escolhas,
+                             msg=f'Rodada: {contador}')
+
+
+def certo_errado(resposta: str, estado: str, acertos: int):
+    if resposta == estado:
+        easygui.msgbox(msg='Você acertou!')
+        resultado = acertos + 1
+        return resultado
+    else:
+        easygui.msgbox(msg=f'Você errou. A resposta correta era {estado}')
+        pass
 
 
 def jogo(listaoriginal: list, repeticoes: int):
@@ -152,27 +174,19 @@ def jogo(listaoriginal: list, repeticoes: int):
 
         # Testa se as opções não se repetiram
         listainicial = testar(lista_teste=listainicial, lista_extrair=lista2, valor=estado)
-        listarandom = []
-        # ********listarandom = randomizar(lista_input=listainicial, lista_output=listarandom)
-        for a in range(3):
-            listarandom.append(random.choice(listainicial))
-            listainicial.remove(listarandom[a])
 
+        # Faz com que a ordem da lista seja aleatória
+        listarandom = []
+        listarandom = randomizar(lista_input=listainicial, lista_output=listarandom)
         print(f'As opções são: {listarandom}')
 
-        resposta = easygui.buttonbox(title='O jogo',
-                                     image=local2,
-                                     choices=listarandom,
-                                     msg=f'Rodada: {contador}')
-        if resposta == estado:
-            easygui.msgbox(msg='Você acertou!')
-            acertos += 1
-        else:
-            easygui.msgbox(msg=f'Você errou. A resposta correta era {estado}')
-            pass
+        # Imprime uma caixa com o mapa, 2 respostas erradas e uma correta
+        resposta = respostas(imagem=local2, escolhas=listarandom, contador=contador)
+        acertos = certo_errado(resposta=resposta, estado=estado, acertos=acertos)
 
         lista2.append(estado)
 
+        # Remove o valor estado da lista1
         removerdalista(lista=lista1, valor=estado)
 
         lista2.append(estado)
