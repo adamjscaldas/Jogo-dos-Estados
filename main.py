@@ -42,6 +42,12 @@ def escolher(facil=3, medio=10, dificil=27) -> str:
                                       f'Info'])
 
 
+def custom():
+    return easygui.multenterbox(msg='Teste da função enterbox()',
+                                title='Partida customizada',
+                                fields=['Rodadas', 'Repetir Estados'])
+
+
 # Converte o texto das opções que a função escolher() retorna para um texto menor
 def conversor(modo: str, facil=3, medio=10, dificil=27) -> str:
     if modo == f'Rápido: {facil} perguntas':
@@ -52,7 +58,7 @@ def conversor(modo: str, facil=3, medio=10, dificil=27) -> str:
         return 'DIFICIL'
     elif modo == "Info":
         return 'INFO'
-    elif modo == 'Customizado':
+    elif modo == 'Custom':
         return 'CUSTOM'
     else:
         return 'QUIT'
@@ -97,7 +103,11 @@ def loop(dificuldade: str, facil=3, medio=10, dificil=27):
         else:
             return 0
     elif dificuldade.upper() == 'CUSTOM':
-        pass
+        valores = custom()
+        # Tem que transformar em um ciclo de testagem para que só possa ser int
+        repeticoes = int(valores[0])
+        # repetir = int(valores[1])
+        jogo(listaoriginal=mapa, repeticoes=repeticoes)
     elif dificuldade.upper() == 'QUIT':
         return None
 
