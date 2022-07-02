@@ -16,7 +16,7 @@ def removerdalista(lista: list, valor: str):
 # Função que inicia o jogo
 def inicio():
     modo = escolher()
-    modo = conversor(modo)
+    modo = conversor(modo=modo)
     modo = loop(dificuldade=modo)
     """
     Se o usuário escolher a opção "Info" o valor retornado será 0,
@@ -43,9 +43,15 @@ def escolher(facil=3, medio=10, dificil=27) -> str:
 
 
 def custom():
-    return easygui.multenterbox(msg='Teste da função enterbox()',
+    return easygui.multenterbox(msg='Aqui você pode criar uma partida customizada.\n\n'
+                                    'Defina o número de rodadas que o jogo terá e se os Estados '
+                                    'poderão ou não se repetir.\n\n'
+                                    '0 = Não repete\n1 = Repete\n\n'
+                                    'Digite Sim em "Voltar?" caso queira voltar para a janela anterior'
+                                    'Se você configurar a partida para ter mais de 27 rodadas, '
+                                    'o jogo se configurará para que as repostas se repitam.',
                                 title='Partida customizada',
-                                fields=['Rodadas', 'Repetir Estados'])
+                                fields=['Rodadas', 'Repetir Estados', 'Voltar?'])
 
 
 # Converte o texto das opções que a função escolher() retorna para um texto menor
@@ -82,11 +88,11 @@ def loop(dificuldade: str, facil=3, medio=10, dificil=27):
     :return:
     """
     if dificuldade.upper() == 'FACIL':
-        jogo(listaoriginal=mapa, repeticoes=facil)
+        jogo1(listaoriginal=mapa, repeticoes=facil, random=0)
     elif dificuldade.upper() == 'MEDIO':
-        jogo(listaoriginal=mapa, repeticoes=medio)
+        jogo1(listaoriginal=mapa, repeticoes=medio, random=0)
     elif dificuldade.upper() == 'DIFICIL':
-        jogo(listaoriginal=mapa, repeticoes=dificil)
+        jogo1(listaoriginal=mapa, repeticoes=dificil, random=0)
     elif dificuldade.upper() == 'INFO':
         retornar = easygui.msgbox(msg='Este é o Jogo dos Estados feito por Adam Johannes.\n\n'
                                       'A proposta do jogo é acertar o maior número de '
@@ -104,10 +110,25 @@ def loop(dificuldade: str, facil=3, medio=10, dificil=27):
             return 0
     elif dificuldade.upper() == 'CUSTOM':
         valores = custom()
+        saida = 0
+        repeticoes = 0
+        repetir = 0
         # Tem que transformar em um ciclo de testagem para que só possa ser int
-        repeticoes = int(valores[0])
-        # repetir = int(valores[1])
-        jogo(listaoriginal=mapa, repeticoes=repeticoes)
+        while saida == 0:
+            if "SIM" in valores[2].upper():
+                return 0
+            else:
+                try:
+                    repeticoes = int(valores[0])
+                    repetir = int(valores[1])
+                    saida = 1
+                    if repeticoes > 27:
+                        repetir = 1
+                except:
+                    valores = custom()
+                finally:
+                    pass
+        jogo1(listaoriginal=mapa, repeticoes=repeticoes, random=repetir)
     elif dificuldade.upper() == 'QUIT':
         return None
 
@@ -157,32 +178,7 @@ def certo_errado(resposta: str, estado: str, acertos: int):
         pass
 
 
-def jogo(listaoriginal: list, repeticoes: int):
-    # Lista usada para o jogo escolher qual o valor da variável estado
-    lista1 = listaoriginal
-    """
-    A ideia é que a variável lista1 só seja usada para atribuir um valor
-    aleatório a variável estado, de forma que o programa não repita
-    nenhuma pergunta.
-    
-    Ela recebe o valor inicial de mapa no início do código e depois tem
-    1 valor extraído dela == ao valor de estado no final do loop de
-    repetição.
-    """
-
-    # Lista usada para escolher 2 valores aleatórios
-    lista2 = listaoriginal
-    """
-    A ideia é que a variável lista2 seja usada para extrair 2 valores
-    aleatórios que serão usados para formar as 2 respostas erradas do
-    jogo.
-    
-    Marcado em "*1-"
-    Ela recebe o valor inicial de mapa no início do código e em seguida
-    tem o valor de estado extraído dela, para que as duas opções
-    erradas não sejam iguais à opção correta. No final do loop, o valor
-    de estado é adicionado ao final da lista2 com a função append().
-    """
+def jogo1(listaoriginal: list, repeticoes: int, random=0):
     # Contador de acertos
     acertos = 0
     # Contador da rodada
@@ -196,17 +192,71 @@ def jogo(listaoriginal: list, repeticoes: int):
     """
     Usado para que o programa consiga identificar o diretório em que ele
     está, permitindo que ele consiga acessar os arquivos .png dos mapas.
-    
+
     Permite que o diretório "Jogo-dos-Estados" possa ser realocado dentro
     da máquina sem que ocorra conflito dentro do código.
     """
+    if random == 0:
+        print('Nessa partida, os Estados não vão se repetir')
+        # Lista usada para o jogo escolher qual o valor da variável estado
+        lista1 = []
+        lista1 += listaoriginal
+        """
+        A ideia é que a variável lista1 só seja usada para atribuir um valor
+        aleatório a variável estado, de forma que o programa não repita
+        nenhuma pergunta.
+        
+        Ela recebe o valor inicial de mapa no início do código e depois tem
+        1 valor extraído dela == ao valor de estado no final do loop de
+        repetição.
+        """
 
+        # Lista usada para escolher 2 valores aleatórios
+        lista2 = []
+        lista2 += listaoriginal
+        """
+        A ideia é que a variável lista2 seja usada para extrair 2 valores
+        aleatórios que serão usados para formar as 2 respostas erradas do
+        jogo.
+        
+        Marcado em "*1-"
+        Ela recebe o valor inicial de mapa no início do código e em seguida
+        tem o valor de estado extraído dela, para que as duas opções
+        erradas não sejam iguais à opção correta. No final do loop, o valor
+        de estado é adicionado ao final da lista2 com a função append().
+        """
+        jogo2(lista1=lista1,
+              lista2=lista2,
+              contador=contador,
+              ordemrespostas=ordemrespostas,
+              local1=local1,
+              repeticoess=repeticoes,
+              acertoss=acertos)
+
+    elif random == 1:
+        print('Nessa partida, os Estados podem se repetir')
+        lista1 = listaoriginal
+        lista2 = listaoriginal
+        jogo2(lista1=lista1,
+              lista2=lista2,
+              contador=contador,
+              ordemrespostas=ordemrespostas,
+              local1=local1,
+              repeticoess=repeticoes,
+              acertoss=acertos)
+
+
+def jogo2(lista1: list,
+          lista2: list,
+          contador: int,
+          ordemrespostas: list,
+          local1: str,
+          repeticoess: int,
+          acertoss: int):
     # Repete com base na escolha do modo de jogo
-    for x in range(repeticoes):
+    for x in range(repeticoess):
         contador += 1
-        print(f'Rodada: {contador}')
         estado = pegaraleatorio(lista=lista1)
-        print(f'O valor de estado é: {estado}')
 
         # Dentro do loop para que seja atualizada com o próximo diretório após cada loop
         local2 = f"""{local1}\\Mapas\\MAPA BRASIL {estado}.png"""
@@ -222,12 +272,18 @@ def jogo(listaoriginal: list, repeticoes: int):
         # Faz com que a ordem da lista seja aleatória
         listarandom = []
         listarandom = randomizar(lista_input=listainicial, lista_output=listarandom)
-        print(f'As opções são: {listarandom}')
 
         # Imprime uma caixa com o mapa, 2 respostas erradas e uma correta
+        """
+        Se o usuário não selecionar nenhuma das 3 opções com valores dos Estados, entra em
+        um loop que imprime a caixa até uma das 3 respostas ser selecionada
+        """
         resposta = respostas(imagem=local2, escolhas=listarandom, contador=contador)
-        acertos = certo_errado(resposta=resposta, estado=estado, acertos=acertos)
 
+        while resposta not in listarandom:
+            resposta = respostas(imagem=local2, escolhas=listarandom, contador=contador)
+
+        acertos = certo_errado(resposta=resposta, estado=estado, acertos=acertoss)
         lista2.append(estado)
 
         # Remove o valor estado da lista1
@@ -238,7 +294,7 @@ def jogo(listaoriginal: list, repeticoes: int):
         ordemrespostas.append(estado)
 
     # Mensagem final
-    easygui.msgbox(msg=f'Você acertou {acertos} de {repeticoes}\n'
+    easygui.msgbox(msg=f'Você acertou {acertoss} de {repeticoess}\n'
                        f'A ordem das respotas foi {ordemrespostas}',
                    title='Resultado',
                    ok_button='Encerrar')
