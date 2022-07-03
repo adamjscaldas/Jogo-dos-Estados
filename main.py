@@ -47,11 +47,11 @@ def custom():
                                     'Defina o número de rodadas que o jogo terá e se os Estados '
                                     'poderão ou não se repetir.\n\n'
                                     '0 = Não repete\n1 = Repete\n\n'
-                                    'Digite Sim em "Voltar?" caso queira voltar para a janela anterior'
                                     'Se você configurar a partida para ter mais de 27 rodadas, '
                                     'o jogo se configurará para que as repostas se repitam.',
                                 title='Partida customizada',
-                                fields=['Rodadas', 'Repetir Estados', 'Voltar?'])
+                                fields=['Rodadas', 'Repetir Estados'],
+                                values=['10', '1'])
 
 
 # Converte o texto das opções que a função escolher() retorna para um texto menor
@@ -99,7 +99,10 @@ def loop(dificuldade: str, facil=3, medio=10, dificil=27):
                                       'Estados que você conseguir.\n\n'
                                       'Ao escolher um modo de jogo, uma imagem aparecerá na '
                                       'sua tela e logo abaixo dela haverão três opções, uma '
-                                      'correta e duas incorretas.'
+                                      'correta e duas incorretas.\n\n'
+                                      'Por padrão, o jogo não irá repetir os Estados que aparecem, '
+                                      'porém, é possível criar uma partida customizada através da '
+                                      'opção "Custom" onde as respostas podem se repetir.'
                                       '\n\n'
                                       'Boa sorte!',
                                   title='Informações',
@@ -115,7 +118,7 @@ def loop(dificuldade: str, facil=3, medio=10, dificil=27):
         repetir = 0
         # Tem que transformar em um ciclo de testagem para que só possa ser int
         while saida == 0:
-            if "SIM" in valores[2].upper():
+            if valores is None:
                 return 0
             else:
                 try:
@@ -318,6 +321,3 @@ if __name__ == '__main__':
                    ok_button='Vamos lá!')
     # Inicia o jogo
     inicio()
-
-# ********* FAZER UMA JANELA PARA ALTERAR A QUANTIDADE DE RODADAS E UMA JANELA DE CRÉDITOS
-# ********* FAZER COM QUE O JOGO NÃO QUEBRE SE A PESSOA CLICAR NA IMAGEM
