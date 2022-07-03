@@ -15,14 +15,19 @@ def removerdalista(lista: list, valor: str):
 
 # Função que inicia o jogo
 def inicio():
-    modo = escolher()
-    modo = conversor(modo=modo)
-    modo = loop(dificuldade=modo)
     """
+    O if serve para que, caso o usuário feche a janela do jogo, o
+    programa encerre, sem que ocorram erros.
+
     Se o usuário escolher a opção "Info" o valor retornado será 0,
     esse while faz com que, sempre que a pessoa fechar a janela que
     "Info" abre, o código retorne para a seleção de dificuldade
+
+    :return:
     """
+    modo = escolher()
+    modo = conversor(modo=modo)
+    modo = loop(dificuldade=modo)
     if modo is None:
         pass
     while modo == 0:
@@ -31,8 +36,17 @@ def inicio():
         modo = loop(dificuldade=modo)
 
 
-# Imprime uma caixa com botões para escolher o modo de jogo, info ou configs
 def escolher(facil=3, medio=10, dificil=27) -> str:
+    """
+    Imprime uma janela com botões para escolher o modo de jogo. Também
+    permite que o usuário abra uma janela para criar uma partida
+    customizada, ou uma janela com informações sobre o jogo.
+
+    :param facil:
+    :param medio:
+    :param dificil:
+    :return:
+    """
     return easygui.buttonbox(msg='Qual será o modo de jogo?',
                              title='Modo de jogo',
                              choices=[f'Rápido: {facil} perguntas',
@@ -43,6 +57,13 @@ def escolher(facil=3, medio=10, dificil=27) -> str:
 
 
 def custom():
+    """
+    Imprime uma janela na qual o usuário pode digitar a quantidade de
+    partidas que o jogo terá e escolher se as respostas vão se repetir
+    ou não.
+
+    :return:
+    """
     return easygui.multenterbox(msg='Aqui você pode criar uma partida customizada.\n\n'
                                     'Defina o número de rodadas que o jogo terá e se os Estados '
                                     'poderão ou não se repetir.\n\n'
@@ -54,8 +75,17 @@ def custom():
                                 values=['10', '1'])
 
 
-# Converte o texto das opções que a função escolher() retorna para um texto menor
 def conversor(modo: str, facil=3, medio=10, dificil=27) -> str:
+    """
+    Converte a str que a função escolher() retorna para um valor
+    mais compacto.
+
+    :param modo:
+    :param facil:
+    :param medio:
+    :param dificil:
+    :return:
+    """
     if modo == f'Rápido: {facil} perguntas':
         return 'FACIL'
     elif modo == f'Diverso: {medio} perguntas':
@@ -70,9 +100,11 @@ def conversor(modo: str, facil=3, medio=10, dificil=27) -> str:
         return 'QUIT'
 
 
-# Com base no valor retornado por conversor(), delimita qual ação o código toma
 def loop(dificuldade: str, facil=3, medio=10, dificil=27):
     """
+    Com base no valor retornado por conversor(), determina qual ação
+    o código tomará.
+
     Se conversor() retornar 'FACIL', 'MEDIO' ou 'DIFICIL', o código
     inicia o jogo com base na dificuldade que estiver definida para
     cada modo.
@@ -137,6 +169,14 @@ def loop(dificuldade: str, facil=3, medio=10, dificil=27):
 
 
 def testar(lista_teste: list, lista_extrair: list, valor: str) -> list:
+    """
+    Testa se os valores de uma lista não estão repetidos.
+
+    :param lista_teste:
+    :param lista_extrair:
+    :param valor:
+    :return:
+    """
     for z in range(50):
         for y in range(len(lista_teste) - 1):
             if lista_teste[y] == valor:
@@ -152,6 +192,13 @@ def testar(lista_teste: list, lista_extrair: list, valor: str) -> list:
 
 
 def randomizar(lista_input: list, lista_output: list) -> list:
+    """
+    Coloca os elementos de uma lista em uma ordem aleatória.
+
+    :param lista_input:
+    :param lista_output:
+    :return:
+    """
     for a in range(3):
         lista_output.append(random.choice(lista_input))
         lista_input.remove(lista_output[a])
@@ -159,6 +206,13 @@ def randomizar(lista_input: list, lista_output: list) -> list:
 
 
 def respostas(imagem: str, escolhas: list, contador: int) -> str:
+    """
+    Imprime uma janela com uma imagem e botões com respostas.
+    :param imagem:
+    :param escolhas:
+    :param contador:
+    :return:
+    """
     while True:
         valor = easygui.buttonbox(title='O jogo',
                                   image=imagem,
@@ -172,6 +226,15 @@ def respostas(imagem: str, escolhas: list, contador: int) -> str:
 
 
 def certo_errado(resposta: str, estado: str, acertos: int):
+    """
+    Verifica se a resposta selecionada corresponde com a imagem/valor
+    da variável estado que armazena a resposta correta.
+
+    :param resposta:
+    :param estado:
+    :param acertos:
+    :return:
+    """
     if resposta == estado:
         easygui.msgbox(msg='Você acertou!')
         resultado = acertos + 1
@@ -182,6 +245,15 @@ def certo_errado(resposta: str, estado: str, acertos: int):
 
 
 def jogo1(listaoriginal: list, repeticoes: int, random=0):
+    """
+    Define as variáveis iniciais do código e testa se o usuário
+    escolheu jogar um jogo onde as respostas podem ou não repetir.
+
+    :param listaoriginal:
+    :param repeticoes:
+    :param random:
+    :return:
+    """
     # Contador de acertos
     acertos = 0
     # Contador da rodada
@@ -256,6 +328,20 @@ def jogo2(lista1: list,
           local1: str,
           repeticoess: int,
           acertoss: int):
+    """
+    Função que roda o jogo, realizando as repetições com base na
+    quantidade de rodadas selecionada. Dentro dela, quase todas
+    as funções anteriores estão incluídas.
+
+    :param lista1:
+    :param lista2:
+    :param contador:
+    :param ordemrespostas:
+    :param local1:
+    :param repeticoess:
+    :param acertoss:
+    :return:
+    """
     # Repete com base na escolha do modo de jogo
     for x in range(repeticoess):
         contador += 1
