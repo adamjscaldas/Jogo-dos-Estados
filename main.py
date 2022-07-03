@@ -343,6 +343,7 @@ def jogo2(lista1: list,
     :return:
     """
     # Repete com base na escolha do modo de jogo
+    contagemacertos = acertoss
     for x in range(repeticoess):
         contador += 1
         estado = pegaraleatorio(lista=lista1)
@@ -372,7 +373,7 @@ def jogo2(lista1: list,
         while resposta not in listarandom:
             resposta = respostas(imagem=local2, escolhas=listarandom, contador=contador)
 
-        acertos = certo_errado(resposta=resposta, estado=estado, acertos=acertoss)
+        contagemacertos = certo_errado(resposta=resposta, estado=estado, acertos=contagemacertos)
         lista2.append(estado)
 
         # Remove o valor estado da lista1
@@ -383,7 +384,7 @@ def jogo2(lista1: list,
         ordemrespostas.append(estado)
 
     # Mensagem final
-    easygui.msgbox(msg=f'Você acertou {acertoss} de {repeticoess}\n'
+    easygui.msgbox(msg=f'Você acertou {contagemacertos} de {repeticoess}\n'
                        f'A ordem das respotas foi {ordemrespostas}',
                    title='Resultado',
                    ok_button='Encerrar')
